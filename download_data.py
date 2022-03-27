@@ -5,7 +5,7 @@ from urllib.request import urlretrieve
 
 URL = 'https://koumoul.com/data-fair/api/v1/datasets/dpe-logements/data-files/DPE_logements.csv'
 PATH = 'data/'
-FILENAME = 'DPE_lDPE_logements.csv'
+FILENAME = 'DPE_logements.csv'
 
 class DownloadProgressBar(tqdm):
     def update_to(self, b=1, bsize=1, tsize=None):
@@ -14,14 +14,14 @@ class DownloadProgressBar(tqdm):
         self.update(b * bsize - self.n)
 
 
-def download_data(url, output_path):
-    if not os.path.exists('data/'):
-        os.makedirs('data')
-    if not os.path.exists(output_path):
+def download_data(url, path, filename):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    if not os.path.exists(path + filename):
         print('Downloading data...')
         with DownloadProgressBar(unit='B', unit_scale=True,
                                  miniters=1, desc=url.split('/')[-1]) as t:
-            urlretrieve(url, filename=output_path, reporthook=t.update_to)
+            urlretrieve(url, filename=path + filename, reporthook=t.update_to)
         print('Done')
 
 def train_test_split(path, filename):
@@ -56,5 +56,5 @@ def train_test_split(path, filename):
     df.loc[2000000:].to_csv(path + "DPE_test.csv")
 
 if __name__ == '__main__':
-    download_data(URL, PATH + FILENAME)
+    download_data(URL, PATH, FILENAME)
     train_test_split(PATH, FILENAME)
